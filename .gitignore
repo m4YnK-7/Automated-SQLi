@@ -1,0 +1,26 @@
+# python
+__pycache__/
+*.pyc
+*.pyo
+.env
+venv/
+
+# logs and secrets
+logs/
+secrets/
+*.pem
+
+# Docker
+docker-compose.override.yml
+*.log
+db_data/
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+EOF
+
