@@ -1,4 +1,3 @@
-cat > scripts/generate_logs.py <<'PY'
 #!/usr/bin/env python3
 # Minimal deterministic JSON-lines sample generator for schema v1
 import argparse, json, random, hashlib, uuid
@@ -50,7 +49,3 @@ def main():
 
 if __name__=="__main__":
     main()
-PY
-chmod +x scripts/generate_logs.py
-git add scripts/generate_logs.py
-git commit -m "feat: add deterministic JSON-lines sample log generator"
