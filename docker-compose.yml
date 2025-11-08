@@ -1,0 +1,44 @@
+version: "3.8"
+services:
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: dvwa
+      MYSQL_USER: dvwa
+      MYSQL_PASSWORD: dvwa
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - lab_net
+
+  dvwa:
+    image: vulnerables/web-dvwa:latest
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_USER=dvwa
+      - MYSQL_PASSWORD=dvwa
+      - MYSQL_DATABASE=dvwa
+    depends_on:
+      - mysql
+    networks:
+      - lab_net
+
+  proxy:
+    build: ./proxy
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./logs:/app/logs
+    depends_on:
+      - dvwa
+    networks:
+      - lab_net
+      - default
+
+volumes:
+  db_data:
+
+networks:
+  lab_net:
+    internal: true
