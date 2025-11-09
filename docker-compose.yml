@@ -11,7 +11,7 @@ services:
     volumes:
       - db_data:/var/lib/mysql
       - ./mysql/conf.d/custom.cnf:/etc/mysql/conf.d/custom.cnf:ro
-      - ./mysql/general.log:/var/lib/mysql/general.log
+      - ./logs/mysql:/var/log/mysql                       # host dir -> container log dir
     networks:
       - lab_net
 
@@ -30,17 +30,14 @@ services:
   proxy:
     build: ./proxy
     ports:
-      - "8080:8080"         # access DVWA via http://localhost:8080
+      - "8080:8080"
     volumes:
       - ./logs:/app/logs
     depends_on:
       - dvwa
     networks:
       - lab_net
-      - default             # allows access from host -> proxy
-
-  # attacker is optional; don't expose it to host network. We'll show how to run sqlmap
-  # as a one-off container attached to the lab_net in the commands section.
+      - default
 
 volumes:
   db_data:
