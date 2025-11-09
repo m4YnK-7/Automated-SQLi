@@ -11,7 +11,7 @@ services:
     volumes:
       - db_data:/var/lib/mysql
       - ./mysql/conf.d/custom.cnf:/etc/mysql/conf.d/custom.cnf:ro
-      - ./mysql/logs:/var/lib/mysql/logs
+      - ./mysql/general.log:/var/lib/mysql/general.log
     networks:
       - lab_net
 
