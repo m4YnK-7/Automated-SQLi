@@ -7,7 +7,6 @@ venv/
 .vscode
 
 # logs and secrets
-logs/
 secrets/
 *.pem
 
