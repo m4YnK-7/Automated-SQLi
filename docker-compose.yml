@@ -22,6 +22,8 @@ services:
       - MYSQL_USER=dvwa
       - MYSQL_PASSWORD=dvwa
       - MYSQL_DATABASE=dvwa
+    volumes:
+      - ./dvwa/config/config.inc.php:/var/www/html/config/config.inc.php:ro
     depends_on:
       - mysql
     networks:
