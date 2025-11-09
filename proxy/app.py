@@ -9,6 +9,26 @@ app = Flask(__name__)
 DVWA_HOST = "http://dvwa"  # service name in compose
 LOG_PATH = "/app/logs/traces.jl"
 
+@app.before_request
+def ensure_trace_id():
+    # prefer an incoming trace id (trusted proxies can set this)
+    incoming = request.headers.get("X-Trace-ID")
+    if incoming and len(incoming) == 36:
+        request.trace_id = incoming
+        # optional: you can validate it's a UUIDv4 if you want
+    else:
+        request.trace_id = str(uuid.uuid4())
+
+@app.after_request
+def attach_trace_id(response: Response):
+    # ensure every outgoing response carries the trace id
+    try:
+        response.headers["X-Trace-ID"] = request.trace_id
+    except Exception:
+        # defensive: if request.trace_id is missing for some reason, ignore
+        pass
+    return response
+
 def now_iso():
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 
@@ -91,7 +111,7 @@ def inject_comment_into_body(body_bytes, content_type, comment):
 @app.route("/", defaults={"path": ""}, methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
 @app.route("/<path:path>", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
 def proxy(path):
-    trace_id = str(uuid.uuid4())
+    trace_id = getattr(request, "trace_id", str(uuid.uuid4()))
     target = DVWA_HOST.rstrip("/") + "/" + path
     sql_comment = f"/* trace_id={trace_id} */"
     sql_comment_added = False
