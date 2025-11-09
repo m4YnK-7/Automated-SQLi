@@ -1,4 +1,5 @@
 <?php
+$DBMS = 'MySQL';
 $_DVWA = array();
 $_DVWA['db_server']   = 'mysql';
 $_DVWA['db_database'] = 'dvwa';
